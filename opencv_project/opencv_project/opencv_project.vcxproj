@@ -106,7 +106,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <AdditionalLibraryDirectories>C:\opencv\build\x64\vc14\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opencv_core2413d.lib;opencv_contrib2413d.lib;opencv_highgui2413d.lib;opencv_imgproc2413d.lib;opencv_features2d2413.lib;opencv_objdetect2413d.lib;opencv_flann2413d.lib;opencv_nonfree2413d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_core2413d.lib;opencv_contrib2413d.lib;opencv_highgui2413d.lib;opencv_imgproc2413d.lib;opencv_features2d2413d.lib;opencv_objdetect2413d.lib;opencv_flann2413d.lib;opencv_nonfree2413d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
