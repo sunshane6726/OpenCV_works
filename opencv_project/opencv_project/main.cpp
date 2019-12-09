@@ -7,8 +7,8 @@ using namespace cv;
 
 int main() {
 	// 이미지 로드
-	Mat mat_ori = cv::imread("ori.jpg", CV_LOAD_IMAGE_GRAYSCALE);
-	Mat mat_input = cv::imread("input.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+	Mat mat_ori = cv::imread("C:/works/OpenCV_works/images/images/original.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+	Mat mat_input = cv::imread("C:/works/OpenCV_works/images/images/input.jpg", CV_LOAD_IMAGE_GRAYSCALE);
 
 	if (mat_ori.empty() || mat_input.empty())
 	{
@@ -24,7 +24,7 @@ int main() {
 	detector.detect( mat_input, keypoints2);
 	
 
-	printf("원본 이미지 특징점 개수 = [%d]\n 입력 이미지 특징점 개수 = [%d]\n", keypoints1.size(), keypoints2.size());
+	printf("원본 이미지 특징점 개수 = [%d]/n 입력 이미지 특징점 개수 = [%d]/n", keypoints1.size(), keypoints2.size());
 
 	//기술자 계산
 
