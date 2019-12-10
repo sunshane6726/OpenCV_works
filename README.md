@@ -12,6 +12,9 @@ Surf Algorithm
 - carmera capture 확인하기
 
 #### 20191210 
-
 - video playing project1 추가하기
 - carmera capture 확인하기
+
+#### 20191210-2
+- histogram equalization 히스토그램 평활화 작업하기
+- revert and hard 작업 확인하기
