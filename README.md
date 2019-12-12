@@ -30,3 +30,6 @@ Surf Algorithm
 - opencv_nonfree2413d.lib
 - opencv_flann2413d.lib 
 - thresholding image 추가하기
+
+#### 20191212 
+- Otsu Binarization. 파일 추가하기
