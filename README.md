@@ -4,7 +4,14 @@ Surf Algorithm
 #### 20191209
 - Surfing Algorithm 확인하기
 - 디렉토리 확인하기 
-- 종속성 
+- 종속성
+> 이미지 로드하기
+> Cv::imread 함수의 첫 번째 인자는 로드할 이미지 파일의 경로
+>특징점 검출하기
+>기술자 생성하기
+>특징점 정합하기
+> - Brute forece 방식을 이용하여 매칭 
+> 정합 결과 출력하기
 
 #### 20191209-2
 
@@ -33,3 +40,7 @@ Surf Algorithm
 
 #### 20191212 
 - Otsu Binarization. 파일 추가하기
+
+#### 20191213
+- 얼굴 인식(face detection)
+
