@@ -44,3 +44,6 @@ Surf Algorithm
 #### 20191213
 - 얼굴 인식(face detection)
 
+#### 20191214
+-  다른 코드로 인한 얼굴인식 (케임브리지대학교 의 Olivetti Research Laborator에서 제공하는 얼굴 이미지 데이터베이스)
+- 베이스는 총 40명의 얼굴 이미지 세트를 제공 하며, 세트당 10장의 그레이스케일 (gray scale)이미지로 구성

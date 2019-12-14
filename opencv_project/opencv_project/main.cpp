@@ -1,56 +1,70 @@
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/contrib/contrib.hpp>
+#include <opencv2/core/core.hpp>
 #include <opencv/cv.h>
-#include <opencv/highgui.h>
-#include <opencv2/nonfree/features2d.hpp>
 
-using namespace std;
 using namespace cv;
+using namespace std;
 
-int main() {
-	// 이미지 로드
-	Mat mat_ori = cv::imread("C:/works/images/images/lena.png", CV_LOAD_IMAGE_GRAYSCALE);
-	Mat mat_input = cv::imread("C:/works/images/images/Lenna.jpg", CV_LOAD_IMAGE_GRAYSCALE);
-
-	// 이미지  원본과 특징점이 있는 그림을 추가하기
-	if (mat_ori.empty() || mat_input.empty())
-	{
-		printf("[오류] 이미지 로드 불가! \n");
-		exit(-1);
-
-	}
-	// 특징점 찾기
-	cv::SurfFeatureDetector detector;
-	vector<cv::KeyPoint> keypoints1, keypoints2;
+static void read_images(vector<Mat>& images, vector<int>& labels, Mat& test_image, int test_label)
+{
+	char file_path[128];
+	int people_cnt;
+	int face_cnt;
+	int test_people_num;
 	
-	detector.detect( mat_ori, keypoints1);
-	detector.detect( mat_input, keypoints2);
-	printf("원본 이미지 특징점 개수 = [%zd]\n 입력 이미지 특징점 개수 = [%zd]\n", keypoints1.size(), keypoints2.size());
+	Mat test_image2;
 
-	// unsigned __int64 [%zd] 하고는 관련이 없는 것 같다.
-	//기술자 계산
-	// 추가 종속성 추가 features2d2413d.lib 문제 라고 보면된다. 
-	// 추가 종속성 추가 features2d2413d.lib 문제 라고 보면된다. 
-	cv::SurfDescriptorExtractor extractor;
-	Mat descriptor1, descriptor2;
-	extractor.compute(mat_ori, keypoints1, descriptor1);
-	extractor.compute(mat_input, keypoints2, descriptor2);
+	//데이터베이스에 이미지 얼굴 연결하기
+	for (people_cnt = 1; people_cnt <= 10; people_cnt++)
+	{
+		for (face_cnt = 1; face_cnt <= 9; face_cnt++)
+		{
+			sprintf(file_path, "C://works/OpenCV_works/att_faces/s%d/%d.pgm", people_cnt, face_cnt);
+			images.push_back(imread(file_path, CV_LOAD_IMAGE_GRAYSCALE));
+			labels.push_back(people_cnt);
+			
+		}
+	}
+	// 인지 테스트 위한 얼굴 이미지 로드하기
 
-	// Brute Force 매칭
-
-	cv::BFMatcher matcher(NORM_L2);
-	vector<cv::DMatch> matches;
-	matcher.match(descriptor1, descriptor2, matches);
-	sort(matches.begin(), matches.end());
-	matches.erase(matches.begin() + 25, matches.end());
-
-	// 매칭 결과
-	Mat result;
-	drawMatches(mat_ori, keypoints1, mat_input, keypoints2, matches, result);
-
-	// 결과 출석
-	imshow("SURF Matching", result);
-	waitKey();
-
-    return 0;
+	sprintf(file_path, "C://works/OpenCV_works/att_faces/s%d/%d.pgm", 3, 10);
+	test_image = imread(file_path, CV_LOAD_IMAGE_GRAYSCALE);
 }
 
+int main(void)
+{
+	Ptr<FaceRecognizer> model;
+	vector<Mat> images;
+	vector<int> labels;
 
+	Mat test_image;
+	Mat predicted_image;
+	string result_message;
+	int predicted_label;
+	//char file_path2[128];
+	//Mat test_image2;
+	
+
+	//얼굴 데이터베이스와 인지 테스트를 위한 이미지 얼굴 로드하기
+	read_images(images, labels, test_image, 1);
+	
+
+	// 새로운 패턴인식자를 창조한다.
+	model = createEigenFaceRecognizer();
+
+	//주어진 데이터와 연관된 라벨을 함께한 체로 얼굴 인식자를 훈련시킨다.
+	model->train(images, labels);
+
+	// 주어진 입력 이미지를 통해 라벨은 예측한다.
+	predicted_label = model->predict(test_image);
+	predicted_image = images[predicted_label * 9 - 9];
+
+	// 인식 결과를 보여준다.
+	imshow("Test face", test_image);
+	imshow("Predicted face", predicted_image);
+	
+	waitKey();
+
+	return 0;
+}

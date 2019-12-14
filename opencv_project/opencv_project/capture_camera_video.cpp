@@ -16,4 +16,5 @@ int capture_camera_video()
 			char c = waitKey(30);
 			if (c == 27) break; // [ESC] key value is 27
 		}
+		return 0;
 }
