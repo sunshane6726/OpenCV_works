@@ -1,70 +1,63 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/contrib/contrib.hpp>
 #include <opencv2/core/core.hpp>
+#include<opencv2/imgproc/imgproc.hpp>
 #include <opencv/cv.h>
+
 
 using namespace cv;
 using namespace std;
 
-static void read_images(vector<Mat>& images, vector<int>& labels, Mat& test_image, int test_label)
-{
-	char file_path[128];
-	int people_cnt;
-	int face_cnt;
-	int test_people_num;
-	
-	Mat test_image2;
+static void line_detect(Mat image) {
 
-	//데이터베이스에 이미지 얼굴 연결하기
-	for (people_cnt = 1; people_cnt <= 10; people_cnt++)
+	Mat filtered_image;
+	vector<Vec4i> lines;
+
+	// Detect lines
+
+	cvtColor(image, filtered_image, CV_BGR2GRAY);
+	GaussianBlur(filtered_image, filtered_image, Size(4, 4), 1.5, 1.5);
+	Sobel(filtered_image, filtered_image, filtered_image.type(), 1, 1, 3);
+	Laplacian(filtered_image, filtered_image, filtered_image.type(), 3);
+	threshold(filtered_image, filtered_image, 130, 255, CV_THRESH_OTSU);
+	HoughLinesP(filtered_image, lines, 1, CV_PI / 180, 100, 50, 5);
+
+
+	// 검출된 라인 그리기
+	for (size_t i = 0; i < lines.size(); i++)
 	{
-		for (face_cnt = 1; face_cnt <= 9; face_cnt++)
-		{
-			sprintf(file_path, "C://works/OpenCV_works/att_faces/s%d/%d.pgm", people_cnt, face_cnt);
-			images.push_back(imread(file_path, CV_LOAD_IMAGE_GRAYSCALE));
-			labels.push_back(people_cnt);
-			
-		}
-	}
-	// 인지 테스트 위한 얼굴 이미지 로드하기
+		Vec4i l = lines[i];
+		line(image, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0, 0, 255), 3, CV_AA);
 
-	sprintf(file_path, "C://works/OpenCV_works/att_faces/s%d/%d.pgm", 3, 10);
-	test_image = imread(file_path, CV_LOAD_IMAGE_GRAYSCALE);
+	}
 }
 
-int main(void)
-{
-	Ptr<FaceRecognizer> model;
-	vector<Mat> images;
-	vector<int> labels;
+int main() {
+	VideoCapture video;
+	Mat image;
+	Mat roi_left_image;
+	Mat roi_right_image;
 
-	Mat test_image;
-	Mat predicted_image;
-	string result_message;
-	int predicted_label;
-	//char file_path2[128];
-	//Mat test_image2;
+	// video 파일 열기
 	
+	video.open("C://works/images/images/challenge.mp4");
+	//video.open("C://works/images/images/challenge.mp4");
 
-	//얼굴 데이터베이스와 인지 테스트를 위한 이미지 얼굴 로드하기
-	read_images(images, labels, test_image, 1);
-	
+	//프레임을 읽기
+	while (.read(image))
+	{
+		// left ROI 안에서 라인탐지
+		roi_left_image = image(Rect(image.cols / 4, image.cols / 3, image.cols / 4, image.cols / 4));
+		line_detect(roi_left_image);
 
-	// 새로운 패턴인식자를 창조한다.
-	model = createEigenFaceRecognizer();
+		// right ROI안에서 라인탐지
+		roi_right_image = image(Rect(image.cols / 2, image.cols / 3, image.cols / 4, image.cols/4));
+		line_detect(roi_left_image);
 
-	//주어진 데이터와 연관된 라벨을 함께한 체로 얼굴 인식자를 훈련시킨다.
-	model->train(images, labels);
-
-	// 주어진 입력 이미지를 통해 라벨은 예측한다.
-	predicted_label = model->predict(test_image);
-	predicted_image = images[predicted_label * 9 - 9];
-
-	// 인식 결과를 보여준다.
-	imshow("Test face", test_image);
-	imshow("Predicted face", predicted_image);
-	
-	waitKey();
-
+		//Show line detect result
+		imshow("Line detected image", image);
+		// Wait 10ms
+		waitKey(10);
+	}
 	return 0;
 }
